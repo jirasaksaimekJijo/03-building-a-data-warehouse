@@ -78,11 +78,6 @@ def main():
     conn = psycopg2.connect(conn_str)
     cur = conn.cursor()
 
-    # drop_tables(cur, conn)
-    # create_tables(cur, conn)
-    # load_tables(cur, conn)
-    # insert_tables(cur, conn)
-
     query = "select * from category"
     cur.execute(query)
     records = cur.fetchall()
