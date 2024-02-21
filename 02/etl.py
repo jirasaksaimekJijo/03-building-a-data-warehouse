@@ -23,9 +23,9 @@ create_table_queries = [
 copy_table_queries = [
     """
     COPY staging_events FROM 's3://zkan-swu-labs/github_events_01.json'
-    CREDENTIALS 'aws_iam_role=arn:aws:iam::211125372636:role/LabRole'
+    CREDENTIALS 'aws_iam_role=arn:aws:iam::264405253253:role/AWSServiceRoleForRedshift'
     JSON 's3://zkan-swu-labs/events_json_path.json'
-    REGION 'us-east-1'
+    REGION 'ap-southeast-2'
     """,
 ]
 insert_table_queries = [
@@ -61,7 +61,6 @@ def load_staging_tables(cur, conn):
         cur.execute(query)
         conn.commit()
 
-
 def insert_tables(cur, conn):
     for query in insert_table_queries:
         cur.execute(query)
@@ -69,10 +68,10 @@ def insert_tables(cur, conn):
 
 
 def main():
-    host = "redshift-cluster-1.cwryxvpilhye.us-east-1.redshift.amazonaws.com"
+    host = "redshift-cluster-1.264405253253.ap-southeast-2.redshift.amazonaws.com"
     dbname = "dev"
     user = "awsuser"
-    password = ""
+    password = "Jowiwi99%"
     port = "5439"
     conn_str = f"host={host} dbname={dbname} user={user} password={password} port={port}"
     conn = psycopg2.connect(conn_str)
