@@ -68,7 +68,7 @@ def insert_tables(cur, conn):
 
 
 def main():
-    host = "redshift-cluster-1.264405253253.ap-southeast-2.redshift.amazonaws.com"
+    host = "redshift-cluster-1.ceh8m2ujwodm.ap-southeast-2.redshift.amazonaws.com:5439/dev"
     dbname = "dev"
     user = "awsuser"
     password = "Jowiwi99%"
