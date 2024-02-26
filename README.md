@@ -8,9 +8,7 @@ To load JSON data into Google BigQuery, prepare your data, create a dataset, def
 
 ## Prosesc
 1.Create Dataset:
-  In Google BigQuery, we first create a Dataset to serve as the storage area for our data. A Dataset is similar to a database in   
-  traditional RDBMS. We can use the BigQuery UI, bq command-line tool, or API to create a Dataset, specifying the name and other 
-  parameters as needed.
+- In Google BigQuery, we first create a Dataset to serve as the storage area for our data. A Dataset is similar to a database in   traditional RDBMS. We can use the BigQuery UI, bq command-line tool, or API to create a Dataset, specifying the name and other parameters as needed.
 
 2.Create Table:
   Once the Dataset is created, the next step is to create a Table to store our data. We use the BigQuery UI, bq command-line tool, or 
