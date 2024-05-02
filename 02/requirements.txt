@@ -1,5 +1,5 @@
-numpy==1.23.2
-psycopg2==2.9.3
-python-dateutil==2.8.2
-pytz==2022.2.1
-six==1.16.0
+os==2.1.4
+json==1.6.3
+glob==0.7
+pandas==2.2.2
+bigquery==0.0.41

@@ -1,0 +1,257 @@
+<!DOCTYPE html>
+        <html>
+        <head>
+            <meta charset="UTF-8">
+            <title>Week 3&colon; ETL Pipeline for a Cloud Data Warehouse &lpar;Google BigQuery&rpar;</title>
+            <style>
+/* From extension vscode.github */
+/*---------------------------------------------------------------------------------------------
+ *  Copyright (c) Microsoft Corporation. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *--------------------------------------------------------------------------------------------*/
+
+.vscode-dark img[src$=\#gh-light-mode-only],
+.vscode-light img[src$=\#gh-dark-mode-only],
+.vscode-high-contrast:not(.vscode-high-contrast-light) img[src$=\#gh-light-mode-only],
+.vscode-high-contrast-light img[src$=\#gh-dark-mode-only] {
+	display: none;
+}
+
+</style>
+            
+        <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/Microsoft/vscode/extensions/markdown-language-features/media/markdown.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/Microsoft/vscode/extensions/markdown-language-features/media/highlight.css">
+<style>
+            body {
+                font-family: -apple-system, BlinkMacSystemFont, 'Segoe WPC', 'Segoe UI', system-ui, 'Ubuntu', 'Droid Sans', sans-serif;
+                font-size: 14px;
+                line-height: 1.6;
+            }
+        </style>
+        <style>
+.task-list-item {
+    list-style-type: none;
+}
+
+.task-list-item-checkbox {
+    margin-left: -20px;
+    vertical-align: middle;
+    pointer-events: none;
+}
+</style>
+<style>
+:root {
+  --color-note: #0969da;
+  --color-tip: #1a7f37;
+  --color-warning: #9a6700;
+  --color-severe: #bc4c00;
+  --color-caution: #d1242f;
+  --color-important: #8250df;
+}
+
+</style>
+<style>
+@media (prefers-color-scheme: dark) {
+  :root {
+    --color-note: #2f81f7;
+    --color-tip: #3fb950;
+    --color-warning: #d29922;
+    --color-severe: #db6d28;
+    --color-caution: #f85149;
+    --color-important: #a371f7;
+  }
+}
+
+</style>
+<style>
+.markdown-alert {
+  padding: 0.5rem 1rem;
+  margin-bottom: 16px;
+  color: inherit;
+  border-left: .25em solid #888;
+}
+
+.markdown-alert>:first-child {
+  margin-top: 0
+}
+
+.markdown-alert>:last-child {
+  margin-bottom: 0
+}
+
+.markdown-alert .markdown-alert-title {
+  display: flex;
+  font-weight: 500;
+  align-items: center;
+  line-height: 1
+}
+
+.markdown-alert .markdown-alert-title .octicon {
+  margin-right: 0.5rem;
+  display: inline-block;
+  overflow: visible !important;
+  vertical-align: text-bottom;
+  fill: currentColor;
+}
+
+.markdown-alert.markdown-alert-note {
+  border-left-color: var(--color-note);
+}
+
+.markdown-alert.markdown-alert-note .markdown-alert-title {
+  color: var(--color-note);
+}
+
+.markdown-alert.markdown-alert-important {
+  border-left-color: var(--color-important);
+}
+
+.markdown-alert.markdown-alert-important .markdown-alert-title {
+  color: var(--color-important);
+}
+
+.markdown-alert.markdown-alert-warning {
+  border-left-color: var(--color-warning);
+}
+
+.markdown-alert.markdown-alert-warning .markdown-alert-title {
+  color: var(--color-warning);
+}
+
+.markdown-alert.markdown-alert-tip {
+  border-left-color: var(--color-tip);
+}
+
+.markdown-alert.markdown-alert-tip .markdown-alert-title {
+  color: var(--color-tip);
+}
+
+.markdown-alert.markdown-alert-caution {
+  border-left-color: var(--color-caution);
+}
+
+.markdown-alert.markdown-alert-caution .markdown-alert-title {
+  color: var(--color-caution);
+}
+
+</style>
+        
+        </head>
+        <body class="vscode-body vscode-light">
+            <h1 id="week-3-etl-pipeline-for-a-cloud-data-warehouse-google-bigquery">Week 3: ETL Pipeline for a Cloud Data Warehouse (Google BigQuery)</h1>
+<h2 id="description">Description</h2>
+<p>Google BigQuery is a fully managed, serverless, and highly scalable cloud data warehouse provided by Google Cloud Platform (GCP).
+It allows you to analyze big data using SQL queries without the need for managing infrastructure. With BigQuery, you can store and query massive datasets quickly and efficiently, making it suitable for analytics, business intelligence, machine learning, and other data-driven tasks.</p>
+<p>To load JSON data into Google BigQuery, prepare your data, create a dataset, define the schema, load the data using the web UI, bq tool, or API, then verify and query it.</p>
+<h2 id="prosesc">Prosesc</h2>
+<ol>
+<li>Create Dataset:</li>
+</ol>
+<ul>
+<li>In Google BigQuery, we first create a Dataset to serve as the storage area for our data. A Dataset is similar to a database in   traditional RDBMS. We can use the BigQuery UI, bq command-line tool, or API to create a Dataset, specifying the name and other parameters as needed.</li>
+</ul>
+<ol start="2">
+<li>Create Table:</li>
+</ol>
+<ul>
+<li>Once the Dataset is created, the next step is to create a Table to store our data. We use the BigQuery UI, bq command-line tool, or API to define the name of the table and the schema of the data to be stored.</li>
+</ul>
+<ol start="3">
+<li>Import JSON Data:</li>
+</ol>
+<ul>
+<li>After creating the Dataset and Table, we can use the BigQuery web UI, bq tool, or API to import data from the JSON file into the created table. We can directly upload JSON files using the BigQuery UI or use the bq command-line tool to load data from local files or Google Cloud Storage.</li>
+</ul>
+<ol start="4">
+<li>Querying:</li>
+</ol>
+<ul>
+<li>Once the data is successfully imported, we can use SQL queries in BigQuery to query, modify, or delete data as needed.</li>
+</ul>
+<h2 id="library-python">Library Python</h2>
+<p>If you want to consolidate all the libraries and versions into one file for installation in one go, you can use either a requirements.txt file or an environment.yml file. These are convenient and efficient ways to manage dependencies for your project.</p>
+<ul>
+<li>equirements.txt: This file specifies the names of the libraries and the versions to be installed. You can create one like this:</li>
+</ul>
+<pre><code class="language-bash">numpy==1.23.2
+psycopg2==2.9.3
+python-dateutil==2.8.2
+pytz==2022.2.1
+six==1.16.0
+</code></pre>
+<h2 id=""></h2>
+<p>The command you would use to install libraries, and once executed, the specified libraries will be ready to use.</p>
+<pre><code class="language-bash">pip install -r requirements.txt
+</code></pre>
+<ul>
+<li>os</li>
+<li>json</li>
+<li>glob</li>
+<li>pd</li>
+<li>bigquery</li>
+</ul>
+<h2 id="working-steps-of-this-project">Working steps of this project</h2>
+<h3 id="step-1">Step 1:</h3>
+<pre><code class="language-bash">ilepath = <span class="hljs-string">&#x27;github_events_01.json&#x27;</span>
+all_files = []
+<span class="hljs-keyword">for</span> root, <span class="hljs-built_in">dirs</span>, files <span class="hljs-keyword">in</span> os.walk(filepath):
+    files = glob.glob(os.path.join(root, <span class="hljs-string">&quot;*.json&quot;</span>))
+    <span class="hljs-keyword">for</span> f <span class="hljs-keyword">in</span> files:
+        all_files.append(os.path.abspath(f))
+
+num_files = len(all_files)
+<span class="hljs-built_in">print</span>(f<span class="hljs-string">&quot;{num_files} files found in {filepath}&quot;</span>)
+
+raw_d = []
+
+with open(filepath, <span class="hljs-string">&quot;r&quot;</span>, encoding=<span class="hljs-string">&quot;utf-8&quot;</span>) as f:
+    data = json.load(f)
+    <span class="hljs-keyword">for</span> each <span class="hljs-keyword">in</span> data:
+        issue_data = each[<span class="hljs-string">&#x27;payload&#x27;</span>][<span class="hljs-string">&#x27;issue&#x27;</span>][<span class="hljs-string">&#x27;user&#x27;</span>]
+        
+        login = issue_data[<span class="hljs-string">&#x27;login&#x27;</span>]
+        user_id = issue_data[<span class="hljs-string">&#x27;id&#x27;</span>]
+        node_id = issue_data[<span class="hljs-string">&#x27;node_id&#x27;</span>]
+        avatar_url = issue_data[<span class="hljs-string">&#x27;avatar_url&#x27;</span>]
+        url = issue_data[<span class="hljs-string">&#x27;url&#x27;</span>]
+        html_url = issue_data[<span class="hljs-string">&#x27;html_url&#x27;</span>]
+        followers_url = issue_data[<span class="hljs-string">&#x27;followers_url&#x27;</span>]
+        following_url = issue_data[<span class="hljs-string">&#x27;following_url&#x27;</span>]
+        gists_url = issue_data[<span class="hljs-string">&#x27;gists_url&#x27;</span>]
+        starred_url = issue_data[<span class="hljs-string">&#x27;starred_url&#x27;</span>]
+        subscriptions_url = issue_data[<span class="hljs-string">&#x27;subscriptions_url&#x27;</span>]
+        organizations_url = issue_data[<span class="hljs-string">&#x27;organizations_url&#x27;</span>]
+        repos_url = issue_data[<span class="hljs-string">&#x27;repos_url&#x27;</span>]
+        events_url = issue_data[<span class="hljs-string">&#x27;events_url&#x27;</span>]
+        received_events_url = issue_data[<span class="hljs-string">&#x27;received_events_url&#x27;</span>]
+        user_type = issue_data[<span class="hljs-string">&#x27;type&#x27;</span>]
+        site_admin = issue_data[<span class="hljs-string">&#x27;site_admin&#x27;</span>]
+        
+        raw_d.append({
+            <span class="hljs-string">&#x27;login&#x27;</span>: login,
+            <span class="hljs-string">&#x27;id&#x27;</span>: <span class="hljs-built_in">id</span>,
+            <span class="hljs-string">&#x27;node_id&#x27;</span>: node_id,
+            <span class="hljs-string">&#x27;avatar_url&#x27;</span>: avatar_url,
+            <span class="hljs-string">&#x27;user_id&#x27;</span>: user_id,
+            <span class="hljs-string">&#x27;html_url&#x27;</span>: html_url,
+            <span class="hljs-string">&#x27;followers_url&#x27;</span>: followers_url,
+            <span class="hljs-string">&#x27;following_url&#x27;</span>: following_url,
+            <span class="hljs-string">&#x27;gists_url&#x27;</span>: gists_url,
+            <span class="hljs-string">&#x27;starred_url&#x27;</span>: starred_url,
+            <span class="hljs-string">&#x27;subscriptions_url&#x27;</span>: subscriptions_url,
+            <span class="hljs-string">&#x27;organizations_url&#x27;</span>: organizations_url,
+            <span class="hljs-string">&#x27;repos_url&#x27;</span>: repos_url,
+            <span class="hljs-string">&#x27;events_url&#x27;</span>: events_url,
+            <span class="hljs-string">&#x27;received_events_url&#x27;</span>: received_events_url,
+            <span class="hljs-string">&#x27;user_type&#x27;</span>: user_type,
+            <span class="hljs-string">&#x27;site_admin&#x27;</span>: site_admin
+        })
+        <span class="hljs-built_in">continue</span>
+</code></pre>
+<h3 id="step-2">Step 2:</h3>
+<h3 id="step-3">Step 3:</h3>
+
+            
+            
+        </body>
+        </html>

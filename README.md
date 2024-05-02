@@ -37,13 +37,114 @@ The command you would use to install libraries, and once executed, the specified
 ```bash
 pip install -r requirements.txt
 ```
-- numpy
-- psycopg2
-- python-dateutil
-- pytz
-- six
+- os
+- json
+- glob
+- pd
+- bigquery
 
 ## Working steps of this project
-### Step 1: 
-### Step 2:
-### Step 3: 
+### Step 1: File Path Setup
+##### 1.File Processing: 
+- It starts by defining a filepath pointing to the directory containing JSON files (github_events_01.json).
+- Then, it initializes an empty list all_files to store the absolute paths of all JSON files found in the directory and its subdirectories.
+##### 2.File Enumeration:
+- It uses os.walk() to recursively traverse the directory tree and gather a list of all JSON files found.
+- For each file found, it appends the absolute file path to the all_files list.
+##### 3.Counting Files:
+- It calculates the total number of files found and prints a message displaying the count and the filepath.
+
+```bash
+ilepath = 'github_events_01.json'
+all_files = []
+for root, dirs, files in os.walk(filepath):
+    files = glob.glob(os.path.join(root, "*.json"))
+    for f in files:
+        all_files.append(os.path.abspath(f))
+
+num_files = len(all_files)
+print(f"{num_files} files found in {filepath}")
+```
+### Step 2: Reading JSON Data
+##### 1.Data Extraction:
+- It initializes an empty list raw_d to store extracted data.
+- It then iterates over each file in the all_files list.
+- For each file, it opens it and loads the JSON data.
+- For each entry (event) in the JSON data, it extracts user-related information from the payload section, specifically focusing on the issue object's user data.
+- It extracts various attributes such as login, id, avatar_url, url, etc., from the user data and appends them to the raw_d list as a dictionary.
+##### 2.Data Structure:
+- The extracted data is structured into a dictionary format where each dictionary represents user-related information for an event.
+##### 3.Continuation:
+- The continue statement at the end of the loop ensures that the loop continues to the next iteration without executing any further code.
+```bash
+raw_d = []
+
+with open(filepath, "r", encoding="utf-8") as f:
+    data = json.load(f)
+    for each in data:
+        issue_data = each['payload']['issue']['user']
+        
+        login = issue_data['login']
+        user_id = issue_data['id']
+        node_id = issue_data['node_id']
+        avatar_url = issue_data['avatar_url']
+        url = issue_data['url']
+        html_url = issue_data['html_url']
+        followers_url = issue_data['followers_url']
+        following_url = issue_data['following_url']
+        gists_url = issue_data['gists_url']
+        starred_url = issue_data['starred_url']
+        subscriptions_url = issue_data['subscriptions_url']
+        organizations_url = issue_data['organizations_url']
+        repos_url = issue_data['repos_url']
+        events_url = issue_data['events_url']
+        received_events_url = issue_data['received_events_url']
+        user_type = issue_data['type']
+        site_admin = issue_data['site_admin']
+        
+        raw_d.append({
+            'login': login,
+            'id': id,
+            'node_id': node_id,
+            'avatar_url': avatar_url,
+            'user_id': user_id,
+            'html_url': html_url,
+            'followers_url': followers_url,
+            'following_url': following_url,
+            'gists_url': gists_url,
+            'starred_url': starred_url,
+            'subscriptions_url': subscriptions_url,
+            'organizations_url': organizations_url,
+            'repos_url': repos_url,
+            'events_url': events_url,
+            'received_events_url': received_events_url,
+            'user_type': user_type,
+            'site_admin': site_admin
+        })
+        continue
+```
+### Step 3: Creating DataFrame and save to BigQuery
+- After extracting all the relevant data, it creates a Pandas DataFrame (df_raw) from the raw_d list.
+- This line establishes a connection to BigQuery using the provided project ID.
+- Finally, it loads the data from the DataFrame df_raw into a BigQuery table specified by dataset_id and table_id. If the table already exists, it will replace it with the new data (if_exists='replace'). If it doesn't exist, it will create a new table.
+
+
+
+```bash
+df_raw = pd.DataFrame(raw_d)
+
+from google.cloud import bigquery
+
+project_id = "plenary-justice-389205"
+
+# Dataset and table names
+dataset_id = "plenary-justice-389205.Json_to_GCP"
+table_id = "raw_json"
+
+client = bigquery.Client(project=project_id)
+
+# Load the DataFrame to BigQuery
+df_raw.to_gbq(destination_table=f"{dataset_id}.{table_id}",
+          project_id=project_id,
+          if_exists='replace')
+```
