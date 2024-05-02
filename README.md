@@ -135,10 +135,10 @@ df_raw = pd.DataFrame(raw_d)
 
 from google.cloud import bigquery
 
-project_id = "plenary-justice-389205"
+project_id = "------------"
 
 # Dataset and table names
-dataset_id = "plenary-justice-389205.Json_to_GCP"
+dataset_id = ""------------".Json_to_GCP"
 table_id = "raw_json"
 
 client = bigquery.Client(project=project_id)
