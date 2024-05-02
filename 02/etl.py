@@ -1,90 +1,78 @@
-import psycopg2
+import os
+import json
+import glob
+import pandas as pd
+from google.cloud import bigquery
 
+filepath = 'github_events_01.json'
+all_files = []
+for root, dirs, files in os.walk(filepath):
+    files = glob.glob(os.path.join(root, "*.json"))
+    for f in files:
+        all_files.append(os.path.abspath(f))
 
-drop_table_queries = [
-    "DROP TABLE IF EXISTS events",
-]
-create_table_queries = [
-    """
-    CREATE TABLE IF NOT EXISTS staging_events (
-        id text,
-        type text,
-        actor text,
-        repo text,
-        created_at text
-    )
-    """,
-    """
-    CREATE TABLE IF NOT EXISTS events (
-        id int
-    )
-    """,
-]
-copy_table_queries = [
-    """
-    COPY staging_events FROM 's3://zkan-swu-labs/github_events_01.json'
-    CREDENTIALS 'aws_iam_role=arn:aws:iam::264405253253:role/AWSServiceRoleForRedshift'
-    JSON 's3://zkan-swu-labs/events_json_path.json'
-    REGION 'ap-southeast-2'
-    """,
-]
-insert_table_queries = [
-    """
-    INSERT INTO
-      events (
-        id
-      )
-    SELECT
-      DISTINCT id,
-    FROM
-      staging_events
-    WHERE
-      id NOT IN (SELECT DISTINCT id FROM events)
-    """,
-]
+num_files = len(all_files)
+print(f"{num_files} files found in {filepath}")
 
+raw_d = []
 
-def drop_tables(cur, conn):
-    for query in drop_table_queries:
-        cur.execute(query)
-        conn.commit()
+with open(filepath, "r", encoding="utf-8") as f:
+    data = json.load(f)
+    for each in data:
+        issue_data = each['payload']['issue']['user']
+        
+        login = issue_data['login']
+        user_id = issue_data['id']
+        node_id = issue_data['node_id']
+        avatar_url = issue_data['avatar_url']
+        url = issue_data['url']
+        html_url = issue_data['html_url']
+        followers_url = issue_data['followers_url']
+        following_url = issue_data['following_url']
+        gists_url = issue_data['gists_url']
+        starred_url = issue_data['starred_url']
+        subscriptions_url = issue_data['subscriptions_url']
+        organizations_url = issue_data['organizations_url']
+        repos_url = issue_data['repos_url']
+        events_url = issue_data['events_url']
+        received_events_url = issue_data['received_events_url']
+        user_type = issue_data['type']
+        site_admin = issue_data['site_admin']
+        
+        raw_d.append({
+            'login': login,
+            'id': id,
+            'node_id': node_id,
+            'avatar_url': avatar_url,
+            'user_id': user_id,
+            'html_url': html_url,
+            'followers_url': followers_url,
+            'following_url': following_url,
+            'gists_url': gists_url,
+            'starred_url': starred_url,
+            'subscriptions_url': subscriptions_url,
+            'organizations_url': organizations_url,
+            'repos_url': repos_url,
+            'events_url': events_url,
+            'received_events_url': received_events_url,
+            'user_type': user_type,
+            'site_admin': site_admin
+        })
+        continue
+    
+df_raw = pd.DataFrame(raw_d)
 
+from google.cloud import bigquery
 
-def create_tables(cur, conn):
-    for query in create_table_queries:
-        cur.execute(query)
-        conn.commit()
+project_id = "plenary-justice-389205"
 
+# Dataset and table names
+dataset_id = "plenary-justice-389205.Json_to_GCP"
+table_id = "raw_json"
 
-def load_staging_tables(cur, conn):
-    for query in copy_table_queries:
-        cur.execute(query)
-        conn.commit()
+client = bigquery.Client(project=project_id)
 
-def insert_tables(cur, conn):
-    for query in insert_table_queries:
-        cur.execute(query)
-        conn.commit()
-
-
-def main():
-    host = "redshift-cluster-1.ceh8m2ujwodm.ap-southeast-2.redshift.amazonaws.com:5439/dev"
-    dbname = "dev"
-    user = "awsuser"
-    password = "Jowiwi99%"
-    port = "5439"
-    conn_str = f"host={host} dbname={dbname} user={user} password={password} port={port}"
-    conn = psycopg2.connect(conn_str)
-    cur = conn.cursor()
-
-    query = "select * from category"
-    cur.execute(query)
-    records = cur.fetchall()
-    for row in records:
-        print(row)
-
-    conn.close()
-
-
-if __name__ == "__main__":
-    main()
+# Load the DataFrame to BigQuery
+df_raw.to_gbq(destination_table=f"{dataset_id}.{table_id}",
+          project_id=project_id,
+          if_exists='replace')
